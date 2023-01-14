@@ -69,6 +69,32 @@ Source:
 */
 (function(){
   var index = elasticlunr.Index.load(window.searchIndex);
+  var posts = [];
+
+  for(let i = 0; i < Object.keys(window.searchIndex.documentStore.docs).length; i++) {
+    let docInfo = Object.entries(window.searchIndex.documentStore.docs)[i][1];
+    let object = {
+      id : docInfo.id,
+      title : docInfo.title,
+      body : docInfo.body,
+    }
+    posts.push(docInfo);
+  }
+
+  console.log(Object.entries(posts));
+
+  var idx = lunr(function () {
+    // use the language (de)
+    this.use(lunr.ko);
+    // then, the normal lunr index initialization
+    this.field('title', { boost: 10 });
+    this.field('body');
+    
+    for(let i = 0; i < posts.length; i++) {
+      this.add(posts[i]);
+    }
+  });
+  
   userinput.addEventListener('input', show_results, true);
   suggestions.addEventListener('click', accept_suggestion, true);
   
@@ -82,26 +108,31 @@ Source:
         expand: true
       }
     };
-    var results = index.search(value, options);
+
+    var results = idx.search(value);
 
     var entry, childs = suggestions.childNodes;
     var i = 0, len = results.length;
     var items = value.split(/\s+/);
     suggestions.classList.remove('d-none');
 
-    results.forEach(function(page) {
-      if (page.doc.body !== '') {
+    postResult = [];
+    for(let i = 0; i < results.length; i++) {
+      postResult.push(posts.find((post) => results[i].ref === post.id));
+    }
+    
+    postResult.forEach(function(page) {
+      if (page.body !== '') {
         entry = document.createElement('div');
 
         entry.innerHTML = '<a href><span></span><span></span></a>';
-  
+
         a = entry.querySelector('a'),
         t = entry.querySelector('span:first-child'),
         d = entry.querySelector('span:nth-child(2)');
-        a.href = page.ref;
-        t.textContent = page.doc.title;
-        d.innerHTML = makeTeaser(page.doc.body, items);
-  
+        a.href = page.id;
+        t.textContent = page.title;
+        d.innerHTML = makeTeaser(page.body, items);
         suggestions.appendChild(entry);
       }
     });
