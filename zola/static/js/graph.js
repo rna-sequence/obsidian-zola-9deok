@@ -91,7 +91,7 @@ graph.once("afterDrawing", function () {
 	if (curr_node) {
 		if (!graph_is_local) {
 			graph.focus(curr_node.id, {
-				scale: graph.getScale() * 1.8,
+				scale: graph.getScale() * 1.3,
 			});
 		}
 	} else {
