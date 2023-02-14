@@ -68,25 +68,15 @@ Source:
   - https://github.com/getzola/zola/blob/master/docs/static/search.js
 */
 (function(){
-  var index = elasticlunr.Index.load(window.searchIndex);
-  var posts = [];
 
+  var posts = [];
   for(let i = 0; i < Object.keys(window.searchIndex.documentStore.docs).length; i++) {
     let docInfo = Object.entries(window.searchIndex.documentStore.docs)[i][1];
-    let object = {
-      id : docInfo.id,
-      title : docInfo.title,
-      body : docInfo.body,
-    }
     posts.push(docInfo);
   }
 
-  console.log(Object.entries(posts));
-
   var idx = lunr(function () {
-    // use the language (de)
     this.use(lunr.ko);
-    // then, the normal lunr index initialization
     this.field('title', { boost: 10 });
     this.field('body');
     
@@ -100,6 +90,9 @@ Source:
   
   function show_results(){
     var value = this.value.trim();
+    if(value == '') {
+      return;
+    }
     var options = {
       bool: "OR",
       fields: {
