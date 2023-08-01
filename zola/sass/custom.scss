@@ -101,3 +101,35 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* image center align */
+img[alt*="center"] {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* image right align */
+img[alt*="right"] {
+  float:right;
+  clear:right;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.img300_center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 300px;
+  height: 300px;
+}
+
+.img400_center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 400px;
+  height: 400px;
+}
